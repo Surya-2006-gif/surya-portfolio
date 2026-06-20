@@ -391,6 +391,38 @@
   }
   .heatmap div{ width:100%; height:100%; }
 
+  .colab-link{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    color:var(--violet);
+    border:1px solid var(--border-soft);
+    padding:8px 14px;
+    border-radius:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    align-self:flex-start;
+    transition:background .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .colab-link:hover{ background:var(--violet-soft); border-color:var(--violet); color:var(--text-0); }
+
+  .findings-summary{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:var(--mono);
+    font-size:0.75rem;
+  }
+  .findings-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .findings-label{ color:var(--text-2); }
+  .findings-arrow{ color:var(--text-2); }
+  .findings-good{ color:var(--amber); font-weight:600; }
+  .findings-bad{ color:#f87171; font-weight:600; }
+
   /* ============ CONTACT ============ */
   .contact-grid{
     display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
@@ -531,9 +563,9 @@
 
   <section id="projects" class="alt">
     <div class="wrap">
-      <p class="eyebrow reveal">selected projects</p>
+      <p class="eyebrow reveal">best projects</p>
       <h2 class="section-title reveal">Four ways of taking a model apart.</h2>
-      <p class="section-lede reveal">Independent work, all in PyTorch. The goal in each one was understanding what's happening — the benchmark numbers are more a sanity check than the point.</p>
+      <p class="section-lede reveal">Independent work, all in PyTorch. The goal in each one was understanding what's happening — the benchmark numbers are more a sanity check than the point. Everything's on <a href="https://github.com/Surya-2006-gif" target="_blank" rel="noopener" style="color:var(--violet);text-decoration:underline;text-underline-offset:3px;">GitHub</a>.</p>
 
       <div class="project-grid">
 
@@ -542,12 +574,13 @@
             <div class="project-title">Orthogonal Low-Rank Decomposition of Weight Matrices</div>
             <span class="project-tag">PyTorch</span>
           </div>
-          <div class="metric-badge"><b>50-feature</b> superposition toy model</div>
+          <div class="metric-badge"><b>50-feature</b> superposition toy model · GPT-2 Medium</div>
           <ul>
             <li>Started from a simple question: if a model stores multiple features in a single weight matrix through superposition, can you decompose that back out directly from the weights?</li>
             <li>Built a framework that factorizes the matrix into orthogonal, low-rank, feature-specific components — recovering representations for individual features without touching activations.</li>
-            <li>Validated against a 50-feature toy model with high-fidelity reconstruction. The feature-specific subspaces were actually interpretable, which was the part I cared about.</li>
+            <li>Validated against a 50-feature toy model with high-fidelity reconstruction, then ran it on GPT-2 Medium — worked cleanly there too, which was the real test.</li>
           </ul>
+          <a href="https://colab.research.google.com/drive/1cLy_I77p7Fbp_ca1Yk6-aEE2uEx1sHdO?usp=sharing" target="_blank" rel="noopener" class="colab-link">Open in Colab ↗</a>
         </article>
 
         <article class="panel project-card reveal">
@@ -560,10 +593,17 @@
             <div class="heatmap" id="attnHeatmap" aria-hidden="true"></div>
           </div>
           <ul>
-            <li>Trained a 2-layer transformer to compute parity, then tried to figure out how it was actually doing it — tracing the computation through attention heads and MLP layers rather than just trusting that it worked.</li>
-            <li>Found that Layer 1's MLP is doing the real work: converting token representations into something linearly separable by parity class.</li>
-            <li>Confirmed it by swapping Layer 2's learned attention pattern for uniform attention — accuracy dropped 51%. That kind of ablation is the thing I find most satisfying: a clean causal story.</li>
+            <li>Trained a 2-layer transformer to compute parity, then traced exactly how it does it — not just that it works.</li>
+            <li>Layer 1 attention gives roughly uniform scores across all positions, gathering a summary of the bits seen so far. The 0 and 1 token vectors are technically linearly separable at this point, but variance in the 1-cluster causes accuracy to drop.</li>
+            <li>Layer 1's MLP fixes that: it reshapes the representations so 0 and 1 vectors become perfectly linearly separable and carries a clean linear parity signal forward to each token position.</li>
+            <li>Layer 2 attention uses a block-pattern with scores increasing slightly leftward — not computing parity itself (that's a non-linear operation), but formatting the vectors exactly the way Layer 2's MLP needs them.</li>
+            <li>Confirmed this causally: skipping Layer 2 attention and passing Layer 1 MLP output straight to the unembedding gives only ~50% accuracy. Swapping the learned block-pattern attention for uniform attention loses 51% — a clean story about what each component is actually doing.</li>
           </ul>
+          <div class="findings-summary">
+            <span class="findings-row"><span class="findings-label">with mlp2 format</span><span class="findings-arrow">→ mlp2 → W_U →</span><span class="findings-good">good accuracy</span></span>
+            <span class="findings-row"><span class="findings-label">without mlp2 format</span><span class="findings-arrow">→ mlp2 → W_U →</span><span class="findings-bad">bad accuracy</span></span>
+          </div>
+          <a href="https://colab.research.google.com/drive/1UTVxr880EVcLCFC3tSIKOrI-QtXQeRRU?usp=sharing" target="_blank" rel="noopener" class="colab-link">Open in Colab ↗</a>
         </article>
 
         <article class="panel project-card reveal">
