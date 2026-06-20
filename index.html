@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Surya V | AI Research</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+}
+
+nav{
+    position:fixed;
+    width:100%;
+    top:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:#0f172a;
+    z-index:100;
+}
+
+nav h2{
+    color:#38bdf8;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+    gap:25px;
+}
+
+nav a{
+    text-decoration:none;
+    color:white;
+}
+
+section{
+    padding:100px 10%;
+}
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+}
+
+.hero h1{
+    font-size:4rem;
+}
+
+.hero h2{
+    margin-top:10px;
+    color:#38bdf8;
+}
+
+.hero p{
+    margin-top:20px;
+    max-width:800px;
+    line-height:1.8;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:20px;
+    margin-right:10px;
+    padding:12px 24px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.linkedin{
+    background:#38bdf8;
+    color:black;
+}
+
+.github{
+    border:1px solid #38bdf8;
+    color:#38bdf8;
+}
+
+.section-title{
+    font-size:2rem;
+    margin-bottom:30px;
+    color:#38bdf8;
+}
+
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.card h3{
+    color:#38bdf8;
+    margin-bottom:15px;
+}
+
+.card ul{
+    padding-left:20px;
+}
+
+.skills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.skill{
+    background:#1e293b;
+    padding:10px 18px;
+    border-radius:30px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    background:#020617;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+<h2>Surya V</h2>
+
+<ul>
+<li><a href="#about">About</a></li>
+<li><a href="#interests">Research</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#skills">Skills</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+
+</nav>
+
+<section class="hero">
+
+<div>
+
+<h1>Surya V</h1>
+
+<h2>Computer Vision & Mechanistic Interpretability Researcher</h2>
+
+<p>
+
+B.Tech Computer Science (AI) student at IIITDM Kancheepuram
+(CGPA: 9.14/10).
+
+I study research papers and their implementations to uncover
+architectural limitations, performance bottlenecks, and unexplored
+opportunities. By combining insights from multiple research directions,
+I develop novel Computer Vision architectures and algorithms from first
+principles.
+
+My current focus is Mechanistic Interpretability, particularly
+weight-based interpretability methods that aim to understand neural
+representations directly from model parameters.
+
+</p>
+
+<a
+class="btn linkedin"
+href="https://www.linkedin.com/in/surya-v-820474314"
+target="_blank">
+LinkedIn
+</a>
+
+<a
+class="btn github"
+href="https://github.com/Surya-2006-gif"
+target="_blank">
+GitHub
+</a>
+
+</div>
+
+</section>
+
+<section id="about">
+
+<h2 class="section-title">About Me</h2>
+
+<div class="card">
+
+<p>
+
+I analyze research papers and source code implementations to identify
+performance bottlenecks, architectural limitations, and opportunities
+for improvement.
+
+By synthesizing ideas from multiple papers, I design and build custom
+Computer Vision models from scratch, aiming to improve existing
+architectures and benchmarks.
+
+I am currently transitioning into Mechanistic Interpretability,
+focusing on reverse engineering how neural networks represent and
+process information internally.
+
+</p>
+
+</div>
+
+</section>
+
+<section id="interests">
+
+<h2 class="section-title">Research Interests</h2>
+
+<div class="skills">
+
+<div class="skill">Mechanistic Interpretability</div>
+<div class="skill">Weight Space Analysis</div>
+<div class="skill">Computer Vision</div>
+<div class="skill">Transformers</div>
+<div class="skill">Representation Learning</div>
+<div class="skill">Neural Circuits</div>
+<div class="skill">Object Detection</div>
+
+</div>
+
+</section>
+
+<section id="projects">
+
+<h2 class="section-title">Projects</h2>
+
+<div class="card">
+
+<h3>Orthogonal Low-Rank Decomposition of Weight Matrices</h3>
+
+<ul>
+<li>Developed a weight-space decomposition framework for isolating feature-specific low-rank components.</li>
+<li>Recovered representations directly from model weights without activation-based analysis.</li>
+<li>Validated decomposition on a 50-feature superposition toy model.</li>
+</ul>
+
+</div>
+
+<div class="card">
+
+<h3>Reverse Engineering a Transformer-Based Parity Checker</h3>
+
+<ul>
+<li>Reverse-engineered a 2-layer transformer to trace parity computation.</li>
+<li>Identified Layer-1 MLP as the source of linearly separable parity representations.</li>
+<li>Replacing learned Layer-2 attention with uniform attention reduced accuracy by 51%.</li>
+</ul>
+
+</div>
+
+<div class="card">
+
+<h3>Detachable-DETR</h3>
+
+<ul>
+<li>Designed an encoder-only DETR architecture.</li>
+<li>Introduced dual-level denoising.</li>
+<li>Reduced inference latency by 15% while achieving 0.57 mAP@0.5.</li>
+</ul>
+
+</div>
+
+<div class="card">
+
+<h3>Context-Aware YOLO with Modern Hopfield Networks</h3>
+
+<ul>
+<li>Integrated Modern Hopfield Networks into YOLO.</li>
+<li>Built and annotated a 1,000-image contextual dataset.</li>
+<li>Detected contextual anomalies in 66% of test cases.</li>
+</ul>
+
+</div>
+
+</section>
+
+<section id="skills">
+
+<h2 class="section-title">Technical Skills</h2>
+
+<div class="skills">
+
+<div class="skill">Python</div>
+<div class="skill">C</div>
+<div class="skill">C++</div>
+<div class="skill">PyTorch</div>
+<div class="skill">TensorFlow</div>
+<div class="skill">Keras</div>
+<div class="skill">OpenCV</div>
+<div class="skill">Scikit-Learn</div>
+<div class="skill">Ubuntu</div>
+<div class="skill">TensorRT</div>
+
+</div>
+
+</section>
+
+<section id="contact">
+
+<h2 class="section-title">Contact</h2>
+
+<p>Email: suryaatphase2@gmail.com</p>
+
+<br>
+
+<p>
+LinkedIn:
+<a href="https://www.linkedin.com/in/surya-v-820474314" target="_blank">
+linkedin.com/in/surya-v-820474314
+</a>
+</p>
+
+<br>
+
+<p>
+GitHub:
+<a href="https://github.com/Surya-2006-gif" target="_blank">
+github.com/Surya-2006-gif
+</a>
+</p>
+
+</section>
+
+<footer>
+
+<p>© 2026 Surya V</p>
+
+</footer>
+
+</body>
+</html>
