@@ -3,348 +3,862 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surya V — Computer Vision &amp; Mechanistic Interpretability</title>
+<meta name="description" content="Surya V — B.Tech CS (AI) researcher working on computer vision architectures and weight-based mechanistic interpretability.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307060d'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%238b5cf6' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23fbbf24'/%3E%3C/svg%3E">
 
-<title>Surya V | AI Research</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',sans-serif;
-}
+  /* ============ TOKENS ============ */
+  :root{
+    --void: #07060d;
+    --void-2: #0c0a16;
+    --panel: #14101f;
+    --panel-2: #181228;
+    --border: #2a2140;
+    --border-soft: rgba(139,92,246,0.18);
 
-body{
-    background:#0f172a;
-    color:white;
-}
+    --violet: #8b5cf6;
+    --violet-deep: #5b21b6;
+    --violet-soft: rgba(139,92,246,0.14);
 
-nav{
-    position:fixed;
-    width:100%;
-    top:0;
+    --amber: #fbbf24;
+    --amber-deep: #d97706;
+    --amber-soft: rgba(251,191,36,0.14);
+
+    --indigo: #3b1f78;
+
+    --text-0: #f6f4ff;
+    --text-1: #c9c2e0;
+    --text-2: #8a82a6;
+
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    --maxw: 1180px;
+  }
+
+  *,*::before,*::after{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--void);
+    color:var(--text-1);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  body{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(139,92,246,0.10) 1px, transparent 0);
+    background-size: 34px 34px;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  img{ max-width:100%; display:block; }
+
+  ::selection{ background:var(--amber); color:var(--void); }
+
+  :focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px, 5vw, 56px); }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    letter-spacing:0.04em;
+    color:var(--amber);
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    padding:20px 8%;
-    background:#0f172a;
-    z-index:100;
-}
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .eyebrow::before{ content:''; width:7px; height:7px; border-radius:50%; background:var(--amber); box-shadow:0 0 10px var(--amber); flex:none; }
 
-nav h2{
-    color:#38bdf8;
-}
+  h1,h2,h3{ font-family:var(--display); color:var(--text-0); font-weight:600; letter-spacing:-0.01em; }
 
-nav ul{
-    display:flex;
-    list-style:none;
-    gap:25px;
-}
+  .section-title{
+    font-size:clamp(1.7rem, 3vw, 2.4rem);
+    margin-bottom:14px;
+  }
+  .section-lede{
+    color:var(--text-2);
+    max-width:560px;
+    margin-bottom:44px;
+    font-size:1rem;
+  }
 
-nav a{
-    text-decoration:none;
-    color:white;
-}
+  section{ padding:108px 0; position:relative; }
+  section.alt{ background:linear-gradient(180deg, transparent, rgba(91,33,182,0.06), transparent); }
 
-section{
-    padding:100px 10%;
-}
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
 
-.hero{
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; }
+  }
+
+  /* ============ NAV ============ */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px clamp(20px,5vw,56px);
+    background:rgba(7,6,13,0.7);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid transparent;
+    transition:border-color 0.3s ease, background 0.3s ease;
+  }
+  nav.scrolled{ border-bottom-color:var(--border); background:rgba(7,6,13,0.92); }
+
+  .brand{
+    font-family:var(--mono);
+    font-size:0.95rem;
+    color:var(--text-0);
+    letter-spacing:0.02em;
+  }
+  .brand span{ color:var(--amber); }
+
+  .nav-links{ display:flex; gap:34px; }
+  .nav-links a{
+    font-family:var(--mono);
+    font-size:0.82rem;
+    color:var(--text-2);
+    position:relative;
+    padding:4px 0;
+    transition:color 0.2s ease;
+  }
+  .nav-links a:hover, .nav-links a.active{ color:var(--text-0); }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; right:100%; bottom:-2px; height:1px;
+    background:var(--amber); transition:right 0.25s ease;
+  }
+  .nav-links a:hover::after, .nav-links a.active::after{ right:0; }
+
+  .nav-toggle{
+    display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:6px;
+  }
+  .nav-toggle span{ width:22px; height:2px; background:var(--text-0); display:block; transition:transform .25s ease, opacity .25s ease; }
+  .nav-toggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2){ opacity:0; }
+  .nav-toggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
     min-height:100vh;
     display:flex;
     align-items:center;
-}
+    padding-top:110px;
+    overflow:hidden;
+  }
+  #neuralCanvas{
+    position:absolute; inset:0; width:100%; height:100%;
+    opacity:0.85;
+  }
+  .hero::after{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(7,6,13,0) 0%, var(--void) 88%),
+      linear-gradient(180deg, rgba(7,6,13,0.2) 0%, var(--void) 100%);
+    pointer-events:none;
+  }
 
-.hero h1{
-    font-size:4rem;
-}
+  .hero-inner{ position:relative; z-index:2; width:100%; }
 
-.hero h2{
-    margin-top:10px;
-    color:#38bdf8;
-}
+  .hero h1{
+    font-size:clamp(3rem, 9vw, 6rem);
+    line-height:0.98;
+    background:linear-gradient(100deg, var(--text-0) 30%, var(--violet) 70%, var(--amber) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
 
-.hero p{
-    margin-top:20px;
-    max-width:800px;
-    line-height:1.8;
-}
+  .hero h2{
+    font-family:var(--body);
+    font-weight:500;
+    font-size:clamp(1.05rem, 2.2vw, 1.4rem);
+    color:var(--text-1);
+    margin-top:18px;
+    max-width:620px;
+  }
 
-.btn{
-    display:inline-block;
-    margin-top:20px;
-    margin-right:10px;
-    padding:12px 24px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:bold;
-}
+  .hero p.bio{
+    margin-top:22px;
+    max-width:600px;
+    color:var(--text-2);
+    font-size:1rem;
+  }
 
-.linkedin{
-    background:#38bdf8;
-    color:black;
-}
+  .cta-row{ display:flex; flex-wrap:wrap; gap:14px; margin-top:34px; }
 
-.github{
-    border:1px solid #38bdf8;
-    color:#38bdf8;
-}
+  .btn{
+    font-family:var(--mono);
+    font-size:0.85rem;
+    padding:13px 22px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color .2s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(95deg, var(--amber), #f59e0b);
+    color:#1a1206;
+    font-weight:600;
+    box-shadow:0 0 0 rgba(251,191,36,0);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(251,191,36,0.5); }
 
-.section-title{
-    font-size:2rem;
-    margin-bottom:30px;
-    color:#38bdf8;
-}
+  .btn-ghost{
+    border:1px solid var(--border);
+    color:var(--text-1);
+    background:rgba(255,255,255,0.02);
+  }
+  .btn-ghost:hover{ border-color:var(--violet); color:var(--text-0); transform:translateY(-2px); }
 
-.card{
-    background:#1e293b;
-    padding:25px;
-    border-radius:12px;
-    margin-bottom:20px;
-}
+  .stat-strip{
+    margin-top:64px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    background:rgba(20,16,31,0.55);
+    backdrop-filter:blur(6px);
+    max-width:760px;
+  }
+  .stat{
+    padding:18px 16px;
+    border-right:1px solid var(--border);
+    text-align:left;
+  }
+  .stat:last-child{ border-right:none; }
+  .stat .num{
+    font-family:var(--display);
+    font-size:clamp(1.2rem, 2.4vw, 1.6rem);
+    font-weight:700;
+    color:var(--text-0);
+  }
+  .stat .label{
+    font-family:var(--mono);
+    font-size:0.68rem;
+    color:var(--text-2);
+    margin-top:4px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
 
-.card h3{
-    color:#38bdf8;
-    margin-bottom:15px;
-}
+  .scroll-cue{
+    position:absolute; left:50%; bottom:34px; transform:translateX(-50%);
+    font-family:var(--mono); font-size:0.7rem; color:var(--text-2);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    z-index:2;
+  }
+  .scroll-cue .line{ width:1px; height:30px; background:linear-gradient(var(--violet), transparent); animation:scrollline 2s ease-in-out infinite; }
+  @keyframes scrollline{ 0%,100%{ opacity:0.3; } 50%{ opacity:1; } }
 
-.card ul{
-    padding-left:20px;
-}
+  /* ============ CARDS / PANELS ============ */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:32px;
+  }
 
-.skills{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-}
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.3fr 0.9fr;
+    gap:40px;
+    align-items:start;
+  }
+  .about-grid p + p{ margin-top:18px; }
+  .about-grid .panel{ font-size:0.98rem; color:var(--text-1); }
 
-.skill{
-    background:#1e293b;
+  .focus-list{ display:flex; flex-direction:column; gap:0; }
+  .focus-list .panel{ padding:22px 26px; }
+  .focus-item{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:13px 0; border-bottom:1px dashed var(--border);
+    font-family:var(--mono); font-size:0.82rem;
+  }
+  .focus-item:last-child{ border-bottom:none; }
+  .focus-item span:first-child{ color:var(--text-2); }
+  .focus-item span:last-child{ color:var(--amber); }
+
+  /* ============ EXPERIENCE ============ */
+  .exp-card{
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:36px;
+  }
+  .exp-meta{ }
+  .exp-meta .role{ font-family:var(--display); color:var(--text-0); font-size:1.15rem; font-weight:600; }
+  .exp-meta .org{ color:var(--violet); font-weight:600; margin-top:4px; }
+  .exp-meta .when{ font-family:var(--mono); font-size:0.78rem; color:var(--text-2); margin-top:10px; }
+  .exp-body ul{ display:flex; flex-direction:column; gap:14px; }
+  .exp-body li{
+    position:relative; padding-left:22px; color:var(--text-1); font-size:0.97rem;
+  }
+  .exp-body li::before{
+    content:''; position:absolute; left:0; top:9px; width:8px; height:8px; border-radius:2px;
+    background:var(--amber); transform:rotate(45deg); box-shadow:0 0 8px rgba(251,191,36,0.6);
+  }
+
+  /* ============ CHIPS ============ */
+  .chip-grid{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{
+    font-family:var(--mono);
+    font-size:0.82rem;
     padding:10px 18px;
-    border-radius:30px;
-}
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text-1);
+    transition:border-color .2s ease, color .2s ease, transform .2s ease;
+  }
+  .chip:hover{ border-color:var(--violet); color:var(--text-0); transform:translateY(-2px); }
 
-footer{
-    text-align:center;
-    padding:30px;
-    background:#020617;
-}
+  .skill-group{ margin-bottom:30px; }
+  .skill-group:last-child{ margin-bottom:0; }
+  .skill-group h3{
+    font-family:var(--mono); font-size:0.78rem; color:var(--text-2);
+    text-transform:uppercase; letter-spacing:0.06em; font-weight:500; margin-bottom:14px;
+  }
+
+  /* ============ PROJECTS ============ */
+  .project-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:24px;
+  }
+  .project-card{
+    position:relative;
+    display:flex; flex-direction:column; gap:16px;
+    overflow:hidden;
+  }
+  .project-card::before{
+    content:'';
+    position:absolute; top:-40%; right:-30%; width:60%; height:80%;
+    background:radial-gradient(circle, var(--violet-soft), transparent 70%);
+    pointer-events:none;
+  }
+  .project-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+    position:relative; z-index:1;
+  }
+  .project-title{ font-family:var(--display); font-size:1.18rem; color:var(--text-0); font-weight:600; line-height:1.3; }
+  .project-tag{
+    font-family:var(--mono); font-size:0.7rem; color:var(--violet); white-space:nowrap;
+    border:1px solid var(--border-soft); padding:5px 10px; border-radius:7px; flex:none;
+  }
+  .metric-badge{
+    display:inline-flex; align-items:baseline; gap:7px;
+    font-family:var(--mono); font-size:0.78rem; color:var(--text-2);
+    position:relative; z-index:1;
+  }
+  .metric-badge b{ font-family:var(--display); color:var(--amber); font-size:1.25rem; }
+
+  .project-card ul{ display:flex; flex-direction:column; gap:10px; position:relative; z-index:1; }
+  .project-card li{
+    position:relative; padding-left:18px; font-size:0.92rem; color:var(--text-1);
+  }
+  .project-card li::before{
+    content:''; position:absolute; left:0; top:8px; width:6px; height:6px; border-radius:50%;
+    background:var(--violet);
+  }
+
+  .heatmap{
+    display:grid; grid-template-columns:repeat(8, 1fr); gap:2px;
+    width:96px; height:96px; flex:none; border-radius:6px; overflow:hidden;
+  }
+  .heatmap div{ width:100%; height:100%; }
+
+  /* ============ CONTACT ============ */
+  .contact-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px; align-items:center;
+  }
+  .contact-links{ display:flex; flex-direction:column; gap:0; }
+  .contact-link{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 4px; border-bottom:1px solid var(--border);
+    font-family:var(--mono); font-size:0.92rem; color:var(--text-1);
+    transition:color .2s ease, padding-left .2s ease;
+  }
+  .contact-link:first-child{ padding-top:0; }
+  .contact-link .k{ color:var(--text-2); font-size:0.74rem; text-transform:uppercase; letter-spacing:.05em; }
+  .contact-link:hover{ color:var(--amber); padding-left:10px; }
+  .contact-link .arrow{ color:var(--violet); }
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--border);
+    padding:30px clamp(20px,5vw,56px);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    font-family:var(--mono); font-size:0.75rem; color:var(--text-2);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:880px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:rgba(7,6,13,0.97);
+      border-bottom:1px solid var(--border);
+      max-height:0; overflow:hidden;
+      transition:max-height .3s ease;
+    }
+    .nav-links.open{ max-height:340px; }
+    .nav-links a{ padding:16px 24px; border-bottom:1px solid var(--border); }
+    .nav-toggle{ display:flex; }
+
+    .stat-strip{ grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(2){ border-right:none; }
+    .stat:nth-child(1), .stat:nth-child(2){ border-bottom:1px solid var(--border); }
+
+    .about-grid, .contact-grid{ grid-template-columns:1fr; }
+    .exp-card{ grid-template-columns:1fr; gap:18px; }
+    .project-grid{ grid-template-columns:1fr; }
+  }
+
+  @media (max-width:520px){
+    .stat-strip{ grid-template-columns:1fr 1fr; }
+    section{ padding:76px 0; }
+    .project-top{ flex-direction:column; }
+    .heatmap{ width:78px; height:78px; }
+  }
 
 </style>
 </head>
-
 <body>
 
-<nav>
-<h2>Surya V</h2>
-
-<ul>
-<li><a href="#about">About</a></li>
-<li><a href="#interests">Research</a></li>
-<li><a href="#projects">Projects</a></li>
-<li><a href="#skills">Skills</a></li>
-<li><a href="#contact">Contact</a></li>
-</ul>
-
+<nav id="siteNav">
+  <a href="#hero" class="brand">surya<span>.</span>v</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<section class="hero">
+<header class="hero" id="hero">
+  <canvas id="neuralCanvas"></canvas>
 
-<div>
+  <div class="hero-inner wrap">
+    <p class="eyebrow">computer vision · mechanistic interpretability</p>
+    <h1>Surya&nbsp;V</h1>
+    <h2>I want to know what's actually happening inside a trained network — not just that it works.</h2>
+    <p class="bio">B.Tech CS (AI) at IIITDM Kancheepuram. I started in computer vision, building detectors from scratch and picking apart why certain architectures fail in specific conditions. Somewhere along the way that habit turned inward — I got more interested in the weights than the outputs. Now I spend most of my time on mechanistic interpretability, trying to read what a model has actually learned before I ever run a forward pass.</p>
 
-<h1>Surya V</h1>
+    <div class="cta-row">
+      <button class="btn btn-primary" id="emailBtn" onclick="const b=document.getElementById('emailBtn');if(b.dataset.shown){window.location.href='mailto:suryaatphase2@gmail.com';}else{b.textContent='suryaatphase2@gmail.com';b.dataset.shown='1';}">Email me ↗</button>
+      <a class="btn btn-ghost" href="https://github.com/Surya-2006-gif" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/surya-v-820474314" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
 
-<h2>Computer Vision & Mechanistic Interpretability Researcher</h2>
 
-<p>
+  </div>
 
-B.Tech Computer Science (AI) student at IIITDM Kancheepuram
-(CGPA: 9.14/10).
+  <div class="scroll-cue"><span>scroll</span><span class="line"></span></div>
+</header>
 
-I study research papers and their implementations to uncover
-architectural limitations, performance bottlenecks, and unexplored
-opportunities. By combining insights from multiple research directions,
-I develop novel Computer Vision architectures and algorithms from first
-principles.
+<main>
 
-My current focus is Mechanistic Interpretability, particularly
-weight-based interpretability methods that aim to understand neural
-representations directly from model parameters.
+  <section id="about">
+    <div class="wrap">
+      <p class="eyebrow reveal">about</p>
+      <h2 class="section-title reveal">What I'm actually doing.</h2>
 
-</p>
+      <div class="about-grid">
+        <div class="panel reveal">
+          <p>My starting point is usually someone else's paper. I'll reproduce it, get it working, then start pulling at the parts that feel hand-wavy — the assumptions that were never tested, the design choices that got justified post-hoc. A lot of my CV work came out of that: combining pieces from several papers into something that handles the cases the originals quietly ignored.</p>
+          <p>But the question I keep circling back to isn't "does this model work?" — it's "what did it actually learn?" That's what drew me to mechanistic interpretability. I want to crack open the weights and figure out what computation is really happening in there, independent of whatever task the model was trained on. Weight-space methods are what interest me most right now — the idea that you can read a model's circuits straight from its parameters, without needing activations at all.</p>
+          <p>That feels like the harder, more honest version of the question. I'm trying to work on it properly.</p>
+        </div>
 
-<a
-class="btn linkedin"
-href="https://www.linkedin.com/in/surya-v-820474314"
-target="_blank">
-LinkedIn
-</a>
+        <div class="focus-list reveal">
+          <div class="panel">
+            <div class="focus-item"><span>Institute</span><span>IIITDM Kancheepuram</span></div>
+            <div class="focus-item"><span>Program</span><span>B.Tech CS (AI Major)</span></div>
+            <div class="focus-item"><span>CGPA</span><span>9.14 / 10</span></div>
+            <div class="focus-item"><span>Graduating</span><span>June 2028</span></div>
+            <div class="focus-item"><span>Based in</span><span>Chennai, India</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<a
-class="btn github"
-href="https://github.com/Surya-2006-gif"
-target="_blank">
-GitHub
-</a>
 
-</div>
+  <section id="research">
+    <div class="wrap">
+      <p class="eyebrow reveal">research interests</p>
+      <h2 class="section-title reveal">The things I keep coming back to.</h2>
 
-</section>
+      <div class="chip-grid reveal">
+        <span class="chip">Mechanistic Interpretability</span>
+        <span class="chip">Weight-Space Analysis</span>
+        <span class="chip">Neural Circuits</span>
+        <span class="chip">Representation Learning</span>
+        <span class="chip">Computer Vision</span>
+        <span class="chip">Transformers</span>
+        <span class="chip">Object Detection</span>
+      </div>
+    </div>
+  </section>
 
-<section id="about">
+  <section id="projects" class="alt">
+    <div class="wrap">
+      <p class="eyebrow reveal">selected projects</p>
+      <h2 class="section-title reveal">Four ways of taking a model apart.</h2>
+      <p class="section-lede reveal">Independent work, all in PyTorch. The goal in each one was understanding what's happening — the benchmark numbers are more a sanity check than the point.</p>
 
-<h2 class="section-title">About Me</h2>
+      <div class="project-grid">
 
-<div class="card">
+        <article class="panel project-card reveal">
+          <div class="project-top">
+            <div class="project-title">Orthogonal Low-Rank Decomposition of Weight Matrices</div>
+            <span class="project-tag">PyTorch</span>
+          </div>
+          <div class="metric-badge"><b>50-feature</b> superposition toy model</div>
+          <ul>
+            <li>Started from a simple question: if a model stores multiple features in a single weight matrix through superposition, can you decompose that back out directly from the weights?</li>
+            <li>Built a framework that factorizes the matrix into orthogonal, low-rank, feature-specific components — recovering representations for individual features without touching activations.</li>
+            <li>Validated against a 50-feature toy model with high-fidelity reconstruction. The feature-specific subspaces were actually interpretable, which was the part I cared about.</li>
+          </ul>
+        </article>
 
-<p>
+        <article class="panel project-card reveal">
+          <div class="project-top">
+            <div class="project-title">Reverse-Engineering a Transformer Parity Checker</div>
+            <span class="project-tag">PyTorch</span>
+          </div>
+          <div style="display:flex; gap:18px; align-items:center;">
+            <div class="metric-badge" style="flex:1;"><b>&minus;51%</b> accuracy after ablation</div>
+            <div class="heatmap" id="attnHeatmap" aria-hidden="true"></div>
+          </div>
+          <ul>
+            <li>Trained a 2-layer transformer to compute parity, then tried to figure out how it was actually doing it — tracing the computation through attention heads and MLP layers rather than just trusting that it worked.</li>
+            <li>Found that Layer 1's MLP is doing the real work: converting token representations into something linearly separable by parity class.</li>
+            <li>Confirmed it by swapping Layer 2's learned attention pattern for uniform attention — accuracy dropped 51%. That kind of ablation is the thing I find most satisfying: a clean causal story.</li>
+          </ul>
+        </article>
 
-I analyze research papers and source code implementations to identify
-performance bottlenecks, architectural limitations, and opportunities
-for improvement.
+        <article class="panel project-card reveal">
+          <div class="project-top">
+            <div class="project-title">Detachable-DETR: Encoder-Only Object Detection</div>
+            <span class="project-tag">PyTorch</span>
+          </div>
+          <div class="metric-badge"><b>0.57</b> mAP@0.5 &middot; 15% faster</div>
+          <ul>
+            <li>Wanted to see how much of DETR's capability lives in the encoder — so I dropped the decoder entirely and built detection on top of the encoder alone.</li>
+            <li>Added a dual-level denoising mechanism to compensate for the lost multi-scale context the decoder usually provides.</li>
+            <li>Ended up 15% faster with 0.57 mAP@0.5 / 0.43 mAP@0.5:0.95 on PASCAL VOC. Not state of the art, but the point was to see where the encoder's ceiling actually is.</li>
+          </ul>
+        </article>
 
-By synthesizing ideas from multiple papers, I design and build custom
-Computer Vision models from scratch, aiming to improve existing
-architectures and benchmarks.
+        <article class="panel project-card reveal">
+          <div class="project-top">
+            <div class="project-title">Context-Aware YOLO with Modern Hopfield Networks</div>
+            <span class="project-tag">PyTorch · YOLO · OpenCV</span>
+          </div>
+          <div class="metric-badge"><b>66%</b> of test cases flagged</div>
+          <ul>
+            <li>Standard detectors will happily tell you there's a surfboard in a kitchen. I wanted to add some kind of scene-level memory so the model could flag when an object just doesn't fit its context.</li>
+            <li>Wired a Modern Hopfield Network into a YOLO detector, built and annotated a 1,000-image dataset, and evaluated it on contextual consistency rather than just detection accuracy.</li>
+            <li>Flagged semantically odd object–scene relationships in 66% of test cases. Rough, but it shows the idea has legs.</li>
+          </ul>
+        </article>
 
-I am currently transitioning into Mechanistic Interpretability,
-focusing on reverse engineering how neural networks represent and
-process information internally.
+      </div>
+    </div>
+  </section>
 
-</p>
+  <section id="skills">
+    <div class="wrap">
+      <p class="eyebrow reveal">technical skills</p>
+      <h2 class="section-title reveal">The toolbox.</h2>
 
-</div>
+      <div class="reveal">
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <div class="chip-grid">
+            <span class="chip">Python</span>
+            <span class="chip">C</span>
+            <span class="chip">C++</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h3>Frameworks &amp; Libraries</h3>
+          <div class="chip-grid">
+            <span class="chip">PyTorch</span>
+            <span class="chip">TensorFlow</span>
+            <span class="chip">Keras</span>
+            <span class="chip">Scikit-learn</span>
+            <span class="chip">SciPy</span>
+            <span class="chip">OpenCV</span>
+            <span class="chip">TensorRT</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h3>Platform</h3>
+          <div class="chip-grid">
+            <span class="chip">Ubuntu / Linux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</section>
+  <section id="contact" class="alt">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="reveal">
+          <p class="eyebrow">contact</p>
+          <h2 class="section-title">Say hello.</h2>
+          <p class="section-lede" style="margin-bottom:0;">If you're working on interpretability, or thinking about it, I'd genuinely like to talk. Also open to research collaborations and internships. I read everything that comes in.</p>
+        </div>
 
-<section id="interests">
+        <div class="contact-links reveal">
+          <a class="contact-link" href="mailto:suryaatphase2@gmail.com">
+            <span><span class="k">Email</span><br>suryaatphase2@gmail.com</span>
+            <span class="arrow">↗</span>
+          </a>
+          <a class="contact-link" href="https://www.linkedin.com/in/surya-v-820474314" target="_blank" rel="noopener">
+            <span><span class="k">LinkedIn</span><br>linkedin.com/in/surya-v-820474314</span>
+            <span class="arrow">↗</span>
+          </a>
+          <a class="contact-link" href="https://github.com/Surya-2006-gif" target="_blank" rel="noopener">
+            <span><span class="k">GitHub</span><br>github.com/Surya-2006-gif</span>
+            <span class="arrow">↗</span>
+          </a>
+          <a class="contact-link" href="#hero" style="cursor:default;">
+            <span><span class="k">Based in</span><br>Chennai, Tamil Nadu, India</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<h2 class="section-title">Research Interests</h2>
-
-<div class="skills">
-
-<div class="skill">Mechanistic Interpretability</div>
-<div class="skill">Weight Space Analysis</div>
-<div class="skill">Computer Vision</div>
-<div class="skill">Transformers</div>
-<div class="skill">Representation Learning</div>
-<div class="skill">Neural Circuits</div>
-<div class="skill">Object Detection</div>
-
-</div>
-
-</section>
-
-<section id="projects">
-
-<h2 class="section-title">Projects</h2>
-
-<div class="card">
-
-<h3>Orthogonal Low-Rank Decomposition of Weight Matrices</h3>
-
-<ul>
-<li>Developed a weight-space decomposition framework for isolating feature-specific low-rank components.</li>
-<li>Recovered representations directly from model weights without activation-based analysis.</li>
-<li>Validated decomposition on a 50-feature superposition toy model.</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h3>Reverse Engineering a Transformer-Based Parity Checker</h3>
-
-<ul>
-<li>Reverse-engineered a 2-layer transformer to trace parity computation.</li>
-<li>Identified Layer-1 MLP as the source of linearly separable parity representations.</li>
-<li>Replacing learned Layer-2 attention with uniform attention reduced accuracy by 51%.</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h3>Detachable-DETR</h3>
-
-<ul>
-<li>Designed an encoder-only DETR architecture.</li>
-<li>Introduced dual-level denoising.</li>
-<li>Reduced inference latency by 15% while achieving 0.57 mAP@0.5.</li>
-</ul>
-
-</div>
-
-<div class="card">
-
-<h3>Context-Aware YOLO with Modern Hopfield Networks</h3>
-
-<ul>
-<li>Integrated Modern Hopfield Networks into YOLO.</li>
-<li>Built and annotated a 1,000-image contextual dataset.</li>
-<li>Detected contextual anomalies in 66% of test cases.</li>
-</ul>
-
-</div>
-
-</section>
-
-<section id="skills">
-
-<h2 class="section-title">Technical Skills</h2>
-
-<div class="skills">
-
-<div class="skill">Python</div>
-<div class="skill">C</div>
-<div class="skill">C++</div>
-<div class="skill">PyTorch</div>
-<div class="skill">TensorFlow</div>
-<div class="skill">Keras</div>
-<div class="skill">OpenCV</div>
-<div class="skill">Scikit-Learn</div>
-<div class="skill">Ubuntu</div>
-<div class="skill">TensorRT</div>
-
-</div>
-
-</section>
-
-<section id="contact">
-
-<h2 class="section-title">Contact</h2>
-
-<p>Email: suryaatphase2@gmail.com</p>
-
-<br>
-
-<p>
-LinkedIn:
-<a href="https://www.linkedin.com/in/surya-v-820474314" target="_blank">
-linkedin.com/in/surya-v-820474314
-</a>
-</p>
-
-<br>
-
-<p>
-GitHub:
-<a href="https://github.com/Surya-2006-gif" target="_blank">
-github.com/Surya-2006-gif
-</a>
-</p>
-
-</section>
+</main>
 
 <footer>
-
-<p>© 2026 Surya V</p>
-
+  <span>&copy; 2026 Surya V — all circuits reserved.</span>
+  <span>Built with HTML, CSS &amp; an unreasonable number of attention heads.</span>
 </footer>
+
+<script>
+(function(){
+
+  /* ---------- nav scroll state ---------- */
+  const nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  /* ---------- mobile nav toggle ---------- */
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    links.classList.remove('open');
+    toggle.classList.remove('open');
+  }));
+
+  /* ---------- active link on scroll ---------- */
+  const sections = document.querySelectorAll('main section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => navObserver.observe(s));
+
+  /* ---------- reveal on scroll ---------- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ---------- attention heatmap widget ---------- */
+  const hm = document.getElementById('attnHeatmap');
+  if(hm){
+    const size = 8;
+    for(let r = 0; r < size; r++){
+      for(let c = 0; c < size; c++){
+        const dist = Math.abs(r - c);
+        let v = Math.max(0, 1 - dist / 3.2);
+        v += (Math.sin(r * 1.7 + c * 0.9) + 1) * 0.06;
+        v = Math.min(1, Math.max(0.04, v));
+        const cell = document.createElement('div');
+        const violet = [91, 33, 182];
+        const amber = [251, 191, 36];
+        const mix = violet.map((v0, i) => Math.round(v0 + (amber[i] - v0) * v));
+        cell.style.background = `rgb(${mix[0]}, ${mix[1]}, ${mix[2]})`;
+        cell.style.opacity = (0.35 + v * 0.65).toFixed(2);
+        hm.appendChild(cell);
+      }
+    }
+  }
+
+  /* ---------- neural graph canvas ---------- */
+  const canvas = document.getElementById('neuralCanvas');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, nodes, edges, pulses, raf;
+
+  function colorFor(t){
+    const violet = [139, 92, 246];
+    const amber = [251, 191, 36];
+    const r = Math.round(violet[0] + (amber[0] - violet[0]) * t);
+    const g = Math.round(violet[1] + (amber[1] - violet[1]) * t);
+    const b = Math.round(violet[2] + (amber[2] - violet[2]) * t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function buildGraph(){
+    const area = W * H;
+    const count = Math.max(26, Math.min(60, Math.round(area / 26000)));
+    nodes = [];
+    for(let i = 0; i < count; i++){
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.12,
+        r: Math.random() * 1.4 + 1.3,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    const edgeSet = new Set();
+    edges = [];
+    nodes.forEach((n, i) => {
+      const dists = nodes
+        .map((m, j) => ({ j, d: i === j ? Infinity : Math.hypot(m.x - n.x, m.y - n.y) }))
+        .sort((a, b) => a.d - b.d);
+      const k = 2 + Math.floor(Math.random() * 2);
+      for(let m = 0; m < k; m++){
+        const j = dists[m].j;
+        const a = Math.min(i, j), b = Math.max(i, j);
+        const key = a + '-' + b;
+        if(!edgeSet.has(key)){
+          edgeSet.add(key);
+          edges.push({ a, b });
+        }
+      }
+    });
+    pulses = edges.filter(() => Math.random() < 0.35).map(e => ({ a: e.a, b: e.b, t: Math.random(), speed: 0.0025 + Math.random() * 0.003 }));
+  }
+
+  function resize(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = Math.round(rect.width);
+    H = canvas.height = Math.round(rect.height);
+    buildGraph();
+  }
+
+  function frame(){
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.lineWidth = 1;
+    edges.forEach(e => {
+      const a = nodes[e.a], b = nodes[e.b];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      const o = Math.max(0.02, 0.16 - d / 3200);
+      ctx.strokeStyle = `rgba(139,92,246,${o})`;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    });
+
+    pulses.forEach(p => {
+      const a = nodes[p.a], b = nodes[p.b];
+      if(!reduceMotion){
+        p.t += p.speed;
+        if(p.t > 1) p.t = 0;
+      }
+      const x = a.x + (b.x - a.x) * p.t;
+      const y = a.y + (b.y - a.y) * p.t;
+      ctx.fillStyle = colorFor(p.t);
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    nodes.forEach(n => {
+      if(!reduceMotion){
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < 0 || n.x > W) n.vx *= -1;
+        if(n.y < 0 || n.y > H) n.vy *= -1;
+        n.phase += 0.018;
+      }
+      const glow = 0.5 + 0.5 * Math.sin(n.phase);
+      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 7);
+      grad.addColorStop(0, `rgba(251,191,36,${0.35 * glow})`);
+      grad.addColorStop(1, 'rgba(251,191,36,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(238,233,255,0.85)';
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    if(!reduceMotion) raf = requestAnimationFrame(frame);
+  }
+
+  resize();
+  frame();
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      cancelAnimationFrame(raf);
+      resize();
+      frame();
+    }, 200);
+  });
+
+})();
+</script>
 
 </body>
 </html>
